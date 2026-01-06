@@ -30,7 +30,8 @@ const ChatInput = ({ showRichMedia = null }) => {
                           currentQuestion.inputType === 'number';
   const isCoverageQuestion = currentQuestion?.inputType === 'coverage_comparison' &&
                               currentQuestion?.id === 'coverage_tier';
-  const isRichMediaQuestion = isJewelryTypeQuestion || isValueQuestion || isCoverageQuestion;
+  const isImageUploadQuestion = currentQuestion?.inputType === 'image_upload';
+  const isRichMediaQuestion = isJewelryTypeQuestion || isValueQuestion || isCoverageQuestion || isImageUploadQuestion;
 
   // If showRichMedia is specified, only render if it matches
   if (showRichMedia === true && !isRichMediaQuestion) {
@@ -95,6 +96,15 @@ const ChatInput = ({ showRichMedia = null }) => {
           key="coverage-tier-selector"
           totalValue={totalValue}
           onSelect={handleSubmit}
+        />
+      );
+    }
+
+    if (isImageUploadQuestion) {
+      return (
+        <ImageUpload
+          onUpload={handleSubmit}
+          onSkip={() => handleSubmit(null)}
         />
       );
     }

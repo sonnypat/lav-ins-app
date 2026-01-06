@@ -45,6 +45,7 @@ const ChatContainer = () => {
   // Determine if current question needs rich media input
   const isRichMediaQuestion = !quoteResult && (
     currentQuestion?.inputType === 'coverage_comparison' ||
+    currentQuestion?.inputType === 'image_upload' ||
     (currentQuestion?.id?.includes('item') && currentQuestion?.id?.includes('type')) ||
     currentQuestion?.id?.includes('value')
   );
