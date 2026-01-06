@@ -13,12 +13,30 @@ import CoverageComparison from './CoverageComparison';
 import { useChat } from '../../hooks/useChat';
 import { useQuoteFlow } from '../../hooks/useQuoteFlow';
 
-const ChatInput = () => {
+const ChatInput = ({ showRichMedia = null }) => {
   const { addUserMessage } = useChat();
   const { userData } = useChatContext();
   const { currentQuestion, processAnswer, isComplete, isLoading } = useQuoteFlow();
 
   if (isComplete || isLoading || !currentQuestion || currentQuestion.skipInput || currentQuestion.type === 'bot_message') {
+    return null;
+  }
+
+  // Check if this is a rich media question
+  const isJewelryTypeQuestion = currentQuestion.id?.includes('item') &&
+                                 currentQuestion.id?.includes('type') &&
+                                 currentQuestion.inputType === 'select';
+  const isValueQuestion = currentQuestion.id?.includes('value') &&
+                          currentQuestion.inputType === 'number';
+  const isCoverageQuestion = currentQuestion?.inputType === 'coverage_comparison' &&
+                              currentQuestion?.id === 'coverage_tier';
+  const isRichMediaQuestion = isJewelryTypeQuestion || isValueQuestion || isCoverageQuestion;
+
+  // If showRichMedia is specified, only render if it matches
+  if (showRichMedia === true && !isRichMediaQuestion) {
+    return null;
+  }
+  if (showRichMedia === false && isRichMediaQuestion) {
     return null;
   }
 
@@ -45,21 +63,9 @@ const ChatInput = () => {
     await processAnswer(value);
   };
 
-  const renderInput = () => {
-    // In test mode, pass the testValue as defaultValue
+  const renderRichMediaInput = () => {
     const defaultValue = TEST_MODE && currentQuestion.testValue ? currentQuestion.testValue : undefined;
-
-    // Get the validation function from the validators object
     const validationFn = currentQuestion.validator ? validators[currentQuestion.validator] : null;
-
-    // Check if this is a jewelry type question - use rich cards instead
-    const isJewelryTypeQuestion = currentQuestion.id?.includes('item') &&
-                                   currentQuestion.id?.includes('type') &&
-                                   currentQuestion.inputType === 'select';
-
-    // Check if this is a value question - use slider instead
-    const isValueQuestion = currentQuestion.id?.includes('value') &&
-                            currentQuestion.inputType === 'number';
 
     if (isJewelryTypeQuestion) {
       return (
@@ -80,25 +86,32 @@ const ChatInput = () => {
       );
     }
 
+    if (isCoverageQuestion) {
+      const items = userData.jewelry?.items || [];
+      const totalValue = items.reduce((sum, item) => sum + (item?.value || 0), 0);
+
+      return (
+        <CoverageComparison
+          key="coverage-tier-selector"
+          totalValue={totalValue}
+          onSelect={handleSubmit}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  const renderSimpleInput = () => {
+    const defaultValue = TEST_MODE && currentQuestion.testValue ? currentQuestion.testValue : undefined;
+    const validationFn = currentQuestion.validator ? validators[currentQuestion.validator] : null;
+
     // Handle image upload
     if (currentQuestion.inputType === 'image_upload') {
       return (
         <ImageUpload
           onUpload={handleSubmit}
           onSkip={() => handleSubmit(null)}
-        />
-      );
-    }
-
-    // Handle coverage comparison
-    if (currentQuestion.inputType === 'coverage_comparison') {
-      const items = userData.jewelry?.items || [];
-      const totalValue = items.reduce((sum, item) => sum + (item?.value || 0), 0);
-
-      return (
-        <CoverageComparison
-          totalValue={totalValue}
-          onSelect={handleSubmit}
         />
       );
     }
@@ -127,7 +140,6 @@ const ChatInput = () => {
         );
 
       case 'select':
-        // Convert string array to {value, label} format if needed
         const selectOptions = currentQuestion.options.map(opt =>
           typeof opt === 'string' ? { value: opt, label: opt } : opt
         );
@@ -153,9 +165,37 @@ const ChatInput = () => {
     }
   };
 
+  // If showing in rich media panel
+  if (showRichMedia === true) {
+    return (
+      <div className="rich-media-content" key={currentQuestion.id}>
+        <div className="rich-media-header">
+          <h3>{currentQuestion.question}</h3>
+        </div>
+        {renderRichMediaInput()}
+      </div>
+    );
+  }
+
+  // If showing in chat input area when showRichMedia=false
+  // Only render simple inputs (rich media goes to the panel)
+  if (showRichMedia === false) {
+    // Rich media questions are handled by the right panel
+    if (isRichMediaQuestion) {
+      return null;
+    }
+    // Render simple inputs in the chat area
+    return (
+      <div className="chat-input-container" key={currentQuestion.id}>
+        {renderSimpleInput()}
+      </div>
+    );
+  }
+
+  // Default behavior (no showRichMedia prop) - render everything in chat input
   return (
-    <div className="chat-input-container">
-      {renderInput()}
+    <div className="chat-input-container" key={currentQuestion.id}>
+      {isRichMediaQuestion ? renderRichMediaInput() : renderSimpleInput()}
     </div>
   );
 };

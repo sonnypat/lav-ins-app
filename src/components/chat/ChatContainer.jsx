@@ -7,13 +7,14 @@ import ChatInput from './ChatInput';
 import QuoteResultModern from './QuoteResultModern';
 import ProgressStepper from './ProgressStepper';
 import ItemSummaryCards from './ItemSummaryCards';
+import PurchaseActions from './PurchaseActions';
 import Confetti from './Confetti';
 import './../../styles/chat.css';
 
 const ChatContainer = () => {
   const { quoteResult, flowState, userData } = useChatContext();
   const { messages } = useChat();
-  const { startFlow, isLoading } = useQuoteFlow();
+  const { startFlow, isLoading, currentQuestion } = useQuoteFlow();
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -35,8 +36,24 @@ const ChatContainer = () => {
     item => item?.type && item?.value
   );
 
+  // Show item summary in right panel before coverage selection
+  const shouldShowItemSummaryInPanel = hasCompleteItems &&
+                                        !quoteResult &&
+                                        currentQuestion?.id !== 'coverage_tier' &&
+                                        !currentQuestion?.id?.startsWith('owner_');
+
+  // Determine if current question needs rich media input
+  const isRichMediaQuestion = !quoteResult && (
+    currentQuestion?.inputType === 'coverage_comparison' ||
+    (currentQuestion?.id?.includes('item') && currentQuestion?.id?.includes('type')) ||
+    currentQuestion?.id?.includes('value')
+  );
+
+  // Show right panel for: rich media questions, item summary, or quote result
+  const showRightPanel = isRichMediaQuestion || shouldShowItemSummaryInPanel || quoteResult;
+
   return (
-    <div className="chat-container">
+    <div className="chat-layout">
       <Confetti show={showConfetti} duration={4000} />
 
       <div className="chat-header">
@@ -47,15 +64,40 @@ const ChatContainer = () => {
         </div>
       </div>
 
-      {!quoteResult && <ProgressStepper />}
+      <div className="chat-main">
+        <div className={`chat-container ${showRightPanel ? 'has-right-panel' : ''}`}>
+          {!quoteResult && <ProgressStepper />}
 
-      <MessageList messages={messages} isTyping={isLoading}>
-        {hasCompleteItems && !quoteResult && <ItemSummaryCards />}
-      </MessageList>
+          <div className="chat-content">
+            <MessageList messages={messages} isTyping={isLoading} />
+            {/* Show quote inline on mobile (hidden on desktop via CSS) */}
+            {quoteResult && (
+              <div className="mobile-quote-container">
+                <QuoteResultModern />
+              </div>
+            )}
+          </div>
 
-      {quoteResult && <QuoteResultModern />}
+          {!quoteResult && <ChatInput showRichMedia={false} />}
+          {quoteResult && <PurchaseActions />}
+        </div>
 
-      {!quoteResult && <ChatInput />}
+        {showRightPanel && (
+          <div className={`rich-media-panel ${isRichMediaQuestion ? 'has-connector' : ''}`}>
+            {/* Visual connector indicator */}
+            {isRichMediaQuestion && <div className="panel-connector" />}
+
+            {/* Rich media input for current question */}
+            {isRichMediaQuestion && <ChatInput showRichMedia={true} />}
+
+            {/* Item summary when not on rich media question */}
+            {shouldShowItemSummaryInPanel && !isRichMediaQuestion && <ItemSummaryCards />}
+
+            {/* Quote result in right panel */}
+            {quoteResult && <QuoteResultModern />}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,31 +1,187 @@
+/* Chat Layout - Wrapper for sidebar + content */
+.chat-layout {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+/* Modern Chat Header - Sidebar style */
+.chat-header {
+  width: 280px;
+  height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 48px 32px;
+  background: linear-gradient(180deg,
+    rgba(26, 22, 37, 0.95) 0%,
+    rgba(45, 36, 56, 0.92) 50%,
+    rgba(26, 22, 37, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(155, 89, 182, 0.2);
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+/* Chat Main - Contains chat + rich media panel */
+.chat-main {
+  display: flex;
+  flex: 1;
+  height: 100vh;
+  overflow: hidden;
+}
+
 /* Chat Container */
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 800px;
-  margin: 0 auto;
+  flex: 1;
+  min-width: 400px;
+  max-width: 640px;
   background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
   border-radius: 0;
   position: relative;
+  box-sizing: border-box;
+  border-right: 1px solid rgba(155, 89, 182, 0.1);
 }
 
-/* Modern Chat Header - Minimal style */
-.chat-header {
+/* Chat container when right panel is visible */
+.chat-container.has-right-panel {
+  border-right: 1px solid rgba(155, 89, 182, 0.15);
+}
+
+/* Rich Media Panel - Right side */
+.rich-media-panel {
+  flex: 1;
+  min-width: 400px;
+  max-width: 500px;
+  height: 100vh;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 12px;
-  padding: 32px 32px 24px;
-  background: transparent;
-  backdrop-filter: none;
-  border-bottom: 1px solid rgba(155, 89, 182, 0.12);
+  justify-content: flex-start;
+  padding-top: 80px;
+  background: linear-gradient(180deg,
+    rgba(15, 12, 26, 0.6) 0%,
+    rgba(26, 22, 37, 0.4) 100%);
+  padding-left: 32px;
+  padding-right: 32px;
+  padding-bottom: 32px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 89, 182, 0.3) transparent;
   position: relative;
+}
+
+.rich-media-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.rich-media-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rich-media-panel::-webkit-scrollbar-thumb {
+  background: rgba(155, 89, 182, 0.3);
+  border-radius: 3px;
+}
+
+/* Visual connector between chat and panel */
+.panel-connector {
+  position: absolute;
+  left: 0;
+  top: 100px;
+  width: 24px;
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(155, 89, 182, 0.6) 0%,
+    rgba(168, 85, 247, 0.8) 50%,
+    transparent 100%);
+}
+
+.panel-connector::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9b59b6, #a855f7);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+  animation: connectorPulse 2s ease-in-out infinite;
+}
+
+@keyframes connectorPulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.8);
+    transform: scale(1.1);
+  }
+}
+
+/* Add glow effect to panel when connected */
+.rich-media-panel.has-connector {
+  border-left: 2px solid rgba(155, 89, 182, 0.3);
+}
+
+.rich-media-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.rich-media-header {
+  margin-bottom: 8px;
+}
+
+.rich-media-header h3 {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Chat Content - Scrollable area */
+.chat-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 89, 182, 0.3) transparent;
+}
+
+.chat-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-content::-webkit-scrollbar-thumb {
+  background: rgba(155, 89, 182, 0.3);
+  border-radius: 3px;
+}
+
+.chat-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 89, 182, 0.5);
 }
 
 .header-logo {
@@ -33,20 +189,22 @@
 }
 
 .header-icon {
-  font-size: 3rem;
+  font-size: 4rem;
   line-height: 1;
+  margin-bottom: 24px;
+  filter: drop-shadow(0 4px 12px rgba(155, 89, 182, 0.6));
 }
 
 .header-text {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
 
 .header-text h1 {
   margin: 0;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-  font-size: 2.75rem;
+  font-size: 2rem;
   font-weight: 800;
   background: linear-gradient(135deg,
     #ffffff 0%,
@@ -62,48 +220,36 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))
           drop-shadow(0 0 20px rgba(155, 89, 182, 0.4));
   letter-spacing: -0.04em;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
 .header-text p {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4),
-               0 0 12px rgba(155, 89, 182, 0.3);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Message List */
 .message-list {
   flex: 1;
-  overflow-y: auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(155, 89, 182, 0.3) transparent;
-}
-
-.message-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.message-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.message-list::-webkit-scrollbar-thumb {
-  background: rgba(155, 89, 182, 0.3);
-  border-radius: 3px;
-}
-
-.message-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(155, 89, 182, 0.5);
+  min-height: min-content;
 }
 
 /* Chat Messages */
@@ -169,12 +315,12 @@
 }
 
 .message-bubble {
-  padding: 14px 18px;
-  border-radius: 20px;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
   white-space: pre-wrap;
   word-wrap: break-word;
   position: relative;
@@ -259,18 +405,83 @@
 
 /* Chat Input Container */
 .chat-input-container {
-  padding: 24px 32px 32px;
-  background: transparent;
-  backdrop-filter: none;
-  border-top: 1px solid rgba(155, 89, 182, 0.12);
-  box-shadow: none;
+  padding: 20px 24px;
+  background: rgba(26, 22, 37, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(155, 89, 182, 0.15);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
-/* Quote Result */
+/* Purchase Actions */
+.purchase-actions-container {
+  padding: 24px;
+  background: rgba(26, 22, 37, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(155, 89, 182, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.purchase-btn {
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.purchase-btn.primary {
+  background: linear-gradient(135deg, #9b59b6 0%, #a855f7 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(155, 89, 182, 0.4);
+}
+
+.purchase-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.5);
+}
+
+.purchase-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+.purchase-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(155, 89, 182, 0.5);
+}
+
+.purchase-btn.tertiary {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.purchase-btn.tertiary:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Mobile quote container - hidden on desktop, shown on mobile */
+.mobile-quote-container {
+  display: none;
+  padding: 16px;
+}
+
+/* Quote Result - Now shown in right panel */
 .quote-result {
-  margin: 24px 32px;
-  padding: 36px;
-  background: rgba(255, 255, 255, 0.92);
+  margin: 0;
+  padding: 28px;
+  width: 100%;
+  max-width: 450px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 16px;
@@ -278,27 +489,7 @@
   animation: quoteReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(155, 89, 182, 0.2);
   position: relative;
-  overflow-y: auto;
-  max-height: calc(100vh - 180px);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(155, 89, 182, 0.3) transparent;
-}
-
-.quote-result::-webkit-scrollbar {
-  width: 6px;
-}
-
-.quote-result::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.quote-result::-webkit-scrollbar-thumb {
-  background: rgba(155, 89, 182, 0.3);
-  border-radius: 3px;
-}
-
-.quote-result::-webkit-scrollbar-thumb:hover {
-  background: rgba(155, 89, 182, 0.5);
+  flex-shrink: 0;
 }
 
 .quote-result::before {
@@ -741,9 +932,97 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .chat-container {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    border-right: none;
+  }
+
+  .rich-media-panel {
+    display: none;
+  }
+
+  .chat-main {
+    flex-direction: column;
+  }
+
+  /* On smaller screens, show quote inline */
+  .quote-result {
+    margin: 16px;
+    max-width: none;
+    width: calc(100% - 32px);
+  }
+
+  .purchase-actions-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .purchase-btn {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .purchase-btn.tertiary {
+    flex-basis: 100%;
+  }
+
+  /* Show quote inline on smaller screens */
+  .mobile-quote-container {
+    display: block;
+  }
+}
+
 @media (max-width: 768px) {
+  .chat-layout {
+    flex-direction: column;
+  }
+
+  .chat-main {
+    flex: 1;
+    height: auto;
+  }
+
+  .chat-container {
+    flex: 1;
+    height: auto;
+  }
+
   .chat-header {
-    padding: 16px;
+    width: 100%;
+    height: auto;
+    flex-shrink: 0;
+    padding: 20px 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-right: none;
+    border-bottom: 1px solid rgba(155, 89, 182, 0.2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .header-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+    margin-right: 12px;
+  }
+
+  .header-text {
+    gap: 4px;
+    align-items: center;
+  }
+
+  .header-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-text p {
+    font-size: 0.75rem;
+    display: none;
   }
 
   .message-list {
@@ -751,7 +1030,7 @@
   }
 
   .message-content {
-    max-width: 80%;
+    max-width: 85%;
   }
 
   .premium-display {

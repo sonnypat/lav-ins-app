@@ -1,6 +1,16 @@
 // Input Validation Functions
 
 export const validators = {
+  name: (value) => {
+    if (!value || value.trim().length === 0) {
+      return { isValid: false, error: 'Please enter a name' };
+    }
+    if (value.trim().length < 2) {
+      return { isValid: false, error: 'Name must be at least 2 characters' };
+    }
+    return { isValid: true, error: null };
+  },
+
   firstName: (value) => {
     if (!value || value.trim().length === 0) {
       return { isValid: false, error: 'Please enter your first name' };

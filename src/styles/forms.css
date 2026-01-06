@@ -13,14 +13,21 @@
 .select-input {
   flex: 1;
   padding: 14px 18px;
-  border: 2px solid var(--border-color, #E0E0E0);
+  border: 2px solid rgba(155, 89, 182, 0.2);
   border-radius: 28px;
   font-size: 0.9375rem;
-  background: var(--input-background, #FFFFFF);
-  color: var(--text-primary, #212121);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1a1a;
+  font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.text-input::placeholder,
+.select-input::placeholder {
+  color: #6b7280;
+  opacity: 1;
 }
 
 .text-input:hover,
@@ -47,7 +54,7 @@
 
 .submit-button {
   padding: 14px 28px;
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+  background: linear-gradient(135deg, #9b59b6 0%, #a855f7 50%, #8b5cf6 100%);
   color: white;
   border: none;
   border-radius: 28px;
@@ -56,7 +63,7 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.35);
+  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4), 0 2px 8px rgba(155, 89, 182, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -77,9 +84,9 @@
 }
 
 .submit-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #8e44ad 0%, #7e31a3 100%);
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9b59b6 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(155, 89, 182, 0.45);
+  box-shadow: 0 8px 24px rgba(155, 89, 182, 0.5), 0 4px 12px rgba(155, 89, 182, 0.3);
 }
 
 .submit-button:active:not(:disabled) {

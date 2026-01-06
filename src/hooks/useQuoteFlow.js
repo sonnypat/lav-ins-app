@@ -3,6 +3,7 @@ import { useChatContext } from '../context/ChatContext';
 import { QUESTIONS } from '../constants/questions';
 import { useChat } from './useChat';
 import { generateJewelryQuote } from '../services/socotraAPI';
+import { getStateFromZip } from '../utils/zipToState';
 
 export const useQuoteFlow = () => {
   const {
@@ -80,6 +81,12 @@ export const useQuoteFlow = () => {
             const quote = await generateJewelryQuote(currentUserData);
             setQuoteResult(quote);
             setFlowState(prev => ({ ...prev, isLoading: false, isComplete: true }));
+
+            // Add a follow-up message asking if they want to proceed
+            await addBotMessage(
+              "Your personalized quote is ready! Take a look at the details on the right. Would you like to proceed with purchasing this policy?",
+              1000
+            );
           } catch (error) {
             console.error('Error generating quote:', error);
             setFlowState(prev => ({ ...prev, isLoading: false, error: error.message }));
@@ -135,6 +142,19 @@ export const useQuoteFlow = () => {
           ...updatedUserData,
           [keys[0]]: { ...updatedUserData[keys[0]], [keys[1]]: answer }
         };
+
+        // If this is a ZIP code, automatically determine and set the state
+        if (keys[1] === 'zipCode') {
+          const state = getStateFromZip(answer);
+          if (state) {
+            updatedUserData = {
+              ...updatedUserData,
+              [keys[0]]: { ...updatedUserData[keys[0]], state: state }
+            };
+            // Also update the state in the actual state
+            updateUserData('owner.state', state);
+          }
+        }
       }
 
       // Also update the actual state

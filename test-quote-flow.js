@@ -1,18 +1,17 @@
 /**
- * Socotra API Service for Jewelry Insurance
- * Handles authentication and API calls to Socotra platform
+ * Test script to verify the complete quote generation flow
+ * Run with: node test-quote-flow.js
  */
+
+import 'dotenv/config';
 
 const SOCOTRA_CONFIG = {
-  apiUrl: import.meta.env.VITE_SOCOTRA_API_URL,
-  accessToken: import.meta.env.VITE_SOCOTRA_PAT,
-  tenantLocator: import.meta.env.VITE_SOCOTRA_TENANT_LOCATOR,
-  productName: import.meta.env.VITE_SOCOTRA_PRODUCT_NAME,
+  apiUrl: process.env.VITE_SOCOTRA_API_URL,
+  accessToken: process.env.VITE_SOCOTRA_PAT,
+  tenantLocator: process.env.VITE_SOCOTRA_TENANT_LOCATOR,
+  productName: process.env.VITE_SOCOTRA_PRODUCT_NAME,
 };
 
-/**
- * Make authenticated API request to Socotra
- */
 async function makeRequest(endpoint, method = 'GET', data = null) {
   const url = `${SOCOTRA_CONFIG.apiUrl}/policy/${SOCOTRA_CONFIG.tenantLocator}${endpoint}`;
 
@@ -45,9 +44,6 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
   }
 }
 
-/**
- * Find existing account or create new one
- */
 async function findOrCreateAccount(userData) {
   try {
     console.log('[Socotra] Finding or creating account...');
@@ -94,6 +90,7 @@ async function findOrCreateAccount(userData) {
     // Validate the account
     console.log('[Socotra] Validating account...');
     const validatedAccount = await makeRequest(`/accounts/${account.locator}/validate`, 'PATCH', {});
+    console.log('[Socotra] Validation response:', JSON.stringify(validatedAccount, null, 2));
     console.log('[Socotra] ✅ Account validated');
 
     // Give Socotra a moment to process the validation
@@ -110,10 +107,7 @@ async function findOrCreateAccount(userData) {
   }
 }
 
-/**
- * Generate jewelry insurance quote
- */
-export async function generateJewelryQuote(userData) {
+async function generateJewelryQuote(userData) {
   try {
     console.log('[Socotra] Starting quote generation...');
     console.log('[Socotra] User data:', JSON.stringify(userData, null, 2));
@@ -122,22 +116,21 @@ export async function generateJewelryQuote(userData) {
     const account = await findOrCreateAccount(userData);
 
     // Step 2: Build quote request
-    // Map the jewelry items to Socotra PhysicalJewelry exposures
     const elements = userData.jewelry.items.map((item, index) => ({
-      type: 'PhysicalJewelry', // Matches the exposure type in config
+      type: 'PhysicalJewelry',
       data: {
-        jewelryType: item.type, // e.g., "Engagement Ring", "Wedding Set", etc.
-        deductible: '$0', // Default deductible, can be made configurable
+        jewelryType: item.type,
+        deductible: '$0',
         appraisal: {
           appraisalValue: item.value,
-          appraisalDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD
+          appraisalDate: new Date().toISOString().split('T')[0],
           documentType: 'Appraisal'
         },
         jewelryDescription: item.description || `${item.type}`,
-        alarmSystem: 'None', // Default value
-        hasGradingReport: 'No', // Default
-        whoWearsJewelry: 'Self', // Default
-        safeType: 'None', // Default
+        alarmSystem: 'None',
+        hasGradingReport: 'No',
+        whoWearsJewelry: 'Self',
+        safeType: 'None',
       },
     }));
 
@@ -149,16 +142,16 @@ export async function generateJewelryQuote(userData) {
       elements: elements,
       data: {
         policyAddress: {
-          line1: '', // You may want to collect this in your flow
+          line1: '',
           city: '',
           state: userData.owner.state,
           postalCode: userData.owner.zipCode || '',
           country: 'US'
         },
-        salesChannel: 'Direct', // Default to Direct
-        criminalConvictions: 'No', // Default
-        previousExperienceLossDamaged: 'No', // Default
-        previousDenial: 'No', // Default
+        salesChannel: 'Direct',
+        criminalConvictions: 'No',
+        previousExperienceLossDamaged: 'No',
+        previousDenial: 'No',
       },
     };
 
@@ -201,7 +194,43 @@ export async function generateJewelryQuote(userData) {
     console.log('[Socotra] ✅ Full quote retrieved');
 
     // Step 9: Transform to frontend format
-    const result = transformQuoteResponse(fullQuote, userData, pricingData);
+    let totalPremium = 0;
+    if (pricingData?.items && Array.isArray(pricingData.items)) {
+      totalPremium = pricingData.items.reduce((sum, item) => sum + (item.amount || 0), 0);
+    } else if (pricingData?.totalPremium) {
+      totalPremium = pricingData.totalPremium;
+    } else if (fullQuote.pricing?.totalPremium) {
+      totalPremium = fullQuote.pricing.totalPremium;
+    }
+
+    const monthlyPremium = totalPremium > 0 ? Math.ceil(totalPremium / 12) : 0;
+    const annualPremium = totalPremium;
+
+    const result = {
+      success: true,
+      quoteId: fullQuote.locator,
+      quoteLocator: fullQuote.locator,
+      monthlyPremium: monthlyPremium,
+      annualPremium: annualPremium,
+      coverageDetails: {
+        tier: userData.coverage?.tier || 'standard',
+        items: userData.jewelry.items,
+        totalValue: userData.jewelry.items.reduce((sum, item) => sum + item.value, 0),
+      },
+      ownerInfo: {
+        name: `${userData.owner.firstName} ${userData.owner.lastName}`,
+        email: userData.owner.email,
+        phone: userData.owner.phone,
+        state: userData.owner.state,
+      },
+      effectiveDate: new Date(fullQuote.startTimestamp || Date.now()),
+      expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      socotraData: {
+        accountLocator: fullQuote.accountLocator,
+        quoteLocator: fullQuote.locator,
+        pricing: pricingData,
+      },
+    };
 
     console.log('[Socotra] ✅ Quote generation complete!');
     return result;
@@ -216,92 +245,73 @@ export async function generateJewelryQuote(userData) {
   }
 }
 
-/**
- * Transform Socotra quote response to frontend format
- */
-function transformQuoteResponse(socotraQuote, userData, pricingData = null) {
-  // Extract premium from pricing data
-  let totalPremium = 0;
-
-  if (pricingData?.items && Array.isArray(pricingData.items)) {
-    // Sum all charges (premium + taxes + fees)
-    totalPremium = pricingData.items.reduce((sum, item) => sum + (item.amount || 0), 0);
-    console.log('[Socotra] Premium from pricing items:', totalPremium);
-  } else if (pricingData?.totalPremium) {
-    totalPremium = pricingData.totalPremium;
-  } else if (socotraQuote.pricing?.totalPremium) {
-    totalPremium = socotraQuote.pricing.totalPremium;
+const testUserData = {
+  owner: {
+    firstName: 'John',
+    lastName: 'Smith',
+    email: 'john.smith@example.com',
+    phone: '555-123-4567',
+    state: 'NY',
+    zipCode: '10001'
+  },
+  jewelry: {
+    items: [
+      {
+        type: 'Engagement Ring',
+        value: 15000,
+        description: 'Diamond engagement ring'
+      },
+      {
+        type: 'Necklace',
+        value: 8000,
+        description: 'Gold necklace with pendant'
+      }
+    ]
+  },
+  coverage: {
+    tier: 'premium'
   }
+};
 
-  const monthlyPremium = totalPremium > 0 ? Math.ceil(totalPremium / 12) : 0;
-  const annualPremium = totalPremium;
+async function testQuoteFlow() {
+  console.log('🧪 Testing Complete Quote Generation Flow\n');
+  console.log('Test Data:');
+  console.log(JSON.stringify(testUserData, null, 2));
+  console.log('\n' + '='.repeat(60) + '\n');
 
-  return {
-    success: true,
-    quoteId: socotraQuote.locator,
-    quoteLocator: socotraQuote.locator,
-    monthlyPremium: monthlyPremium,
-    annualPremium: annualPremium,
-    coverageDetails: {
-      tier: userData.coverage?.tier || 'standard',
-      items: userData.jewelry.items,
-      totalValue: userData.jewelry.items.reduce((sum, item) => sum + item.value, 0),
-    },
-    ownerInfo: {
-      name: `${userData.owner.firstName} ${userData.owner.lastName}`,
-      email: userData.owner.email,
-      phone: userData.owner.phone,
-      state: userData.owner.state,
-    },
-    effectiveDate: new Date(socotraQuote.startTimestamp || Date.now()),
-    expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-    socotraData: {
-      accountLocator: socotraQuote.accountLocator,
-      quoteLocator: socotraQuote.locator,
-      pricing: pricingData,
-    },
-  };
-}
-
-/**
- * Issue a quote (convert to policy)
- */
-export async function issueQuote(quoteLocator) {
   try {
-    console.log('[Socotra] Issuing quote:', quoteLocator);
-    const policy = await makeRequest(`/quotes/${quoteLocator}/issue`, 'POST', {});
-    console.log('[Socotra] ✅ Policy issued:', policy.locator);
+    const result = await generateJewelryQuote(testUserData);
 
-    return {
-      success: true,
-      policyLocator: policy.locator,
-      policy,
-    };
+    console.log('\n' + '='.repeat(60));
+    console.log('📊 QUOTE RESULT:');
+    console.log('='.repeat(60) + '\n');
+
+    if (result.success) {
+      console.log('✅ Quote generated successfully!\n');
+      console.log(`Quote ID: ${result.quoteId}`);
+      console.log(`Monthly Premium: $${result.monthlyPremium}`);
+      console.log(`Annual Premium: $${result.annualPremium}`);
+      console.log(`Total Coverage: $${result.coverageDetails.totalValue.toLocaleString()}`);
+      console.log(`Owner: ${result.ownerInfo.name}`);
+      console.log(`Email: ${result.ownerInfo.email}`);
+      console.log(`State: ${result.ownerInfo.state}`);
+      console.log(`\nItems covered:`);
+      result.coverageDetails.items.forEach((item, index) => {
+        console.log(`  ${index + 1}. ${item.type} - $${item.value.toLocaleString()}`);
+      });
+
+      console.log('\n✨ Full Quote Data:');
+      console.log(JSON.stringify(result, null, 2));
+    } else {
+      console.log('❌ Quote generation failed!');
+      console.log(`Error: ${result.error}`);
+      console.log('Details:', result.details);
+    }
+
   } catch (error) {
-    console.error('[Socotra] Error issuing quote:', error);
-    return {
-      success: false,
-      error: error.message,
-    };
+    console.error('\n❌ Test failed with error:', error);
+    console.error('Stack:', error.stack);
   }
 }
 
-/**
- * Legacy function for backwards compatibility
- */
-export const saveQuote = async (quoteData) => {
-  console.warn('[Socotra] saveQuote is deprecated, use generateJewelryQuote instead');
-  return generateJewelryQuote(quoteData);
-};
-
-/**
- * Legacy function for backwards compatibility
- */
-export const convertQuoteToPolicy = issueQuote;
-
-export default {
-  generateJewelryQuote,
-  issueQuote,
-  saveQuote,
-  convertQuoteToPolicy,
-};
+testQuoteFlow();

@@ -23,7 +23,7 @@ export const QUESTIONS = [
   {
     id: 'welcome',
     type: 'bot_message',
-    message: "Welcome to Lavalier Jewelry Insurance! 💎\n\nI'm here to help you protect your precious jewelry with a personalized insurance quote in just a few simple steps.\n\nReady to begin?",
+    message: "Hi! Let's get your jewelry protected. I'll guide you through a quick quote.",
     skipInput: true
   },
 
@@ -201,6 +201,44 @@ export const QUESTIONS = [
     testValue: 'premium'
   },
 
+  // Contact Information
+  {
+    id: 'owner_first_name',
+    type: 'question',
+    question: "Great! Now I need a few details to create your quote. What's your first name?",
+    field: 'owner.firstName',
+    inputType: 'text',
+    validator: 'name',
+    testValue: 'John'
+  },
+  {
+    id: 'owner_last_name',
+    type: 'question',
+    question: "And your last name?",
+    field: 'owner.lastName',
+    inputType: 'text',
+    validator: 'name',
+    testValue: 'Doe'
+  },
+  {
+    id: 'owner_email',
+    type: 'question',
+    question: "What's your email address?",
+    field: 'owner.email',
+    inputType: 'text',
+    validator: 'email',
+    testValue: 'john.doe@example.com'
+  },
+  {
+    id: 'owner_phone',
+    type: 'question',
+    question: "And your phone number?",
+    field: 'owner.phone',
+    inputType: 'text',
+    validator: 'phone',
+    testValue: '555-123-4567'
+  },
+
   // Summary
   {
     id: 'summary',
@@ -216,7 +254,7 @@ export const QUESTIONS = [
       const tierName = userData.coverage?.tier || 'Premium';
       const tierCapitalized = tierName.charAt(0).toUpperCase() + tierName.slice(1);
 
-      return `Perfect! Here's what we'll be insuring:\n\n📍 **Zip Code:** ${userData.owner?.zipCode}\n💎 **Items:**\n${itemsList}\n\n💰 **Total Value:** $${totalValue.toLocaleString()}\n🛡️ **Coverage:** ${tierCapitalized}\n\nGenerating your personalized quote...`;
+      return `Perfect! Here's what we'll be insuring:\n\n📍 **Location:** ${userData.owner?.state}, ${userData.owner?.zipCode}\n💎 **Items:**\n${itemsList}\n\n💰 **Total Value:** $${totalValue.toLocaleString()}\n🛡️ **Coverage:** ${tierCapitalized}\n\nGenerating your personalized quote...`;
     },
     triggerQuote: true
   }
