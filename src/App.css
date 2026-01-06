@@ -14,9 +14,11 @@
   align-items: stretch;
   background:
     linear-gradient(135deg,
-      #f8f9fa 0%,
-      #ffffff 50%,
-      #f8f9fa 100%
+      #fafafa 0%,
+      #ffffff 25%,
+      #f5f5f7 50%,
+      #ffffff 75%,
+      #fafafa 100%
     );
   padding: 0;
   box-sizing: border-box;
@@ -29,10 +31,11 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 30%, rgba(122, 0, 223, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(122, 0, 223, 0.03) 0%, transparent 45%);
+    radial-gradient(circle at 15% 25%, rgba(122, 0, 223, 0.06) 0%, transparent 35%),
+    radial-gradient(circle at 85% 75%, rgba(157, 78, 221, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(122, 0, 223, 0.02) 0%, transparent 50%);
   pointer-events: none;
-  animation: subtleGlow 10s ease-in-out infinite alternate;
+  animation: subtleGlow 15s ease-in-out infinite alternate;
 }
 
 @keyframes subtleGlow {
