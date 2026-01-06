@@ -4,10 +4,10 @@
  */
 
 const SOCOTRA_CONFIG = {
-  apiUrl: import.meta.env.VITE_SOCOTRA_API_URL,
-  accessToken: import.meta.env.VITE_SOCOTRA_PAT,
-  tenantLocator: import.meta.env.VITE_SOCOTRA_TENANT_LOCATOR,
-  productName: import.meta.env.VITE_SOCOTRA_PRODUCT_NAME,
+  apiUrl: import.meta.env.VITE_SOCOTRA_API_URL?.trim(),
+  accessToken: import.meta.env.VITE_SOCOTRA_PAT?.trim(),
+  tenantLocator: import.meta.env.VITE_SOCOTRA_TENANT_LOCATOR?.trim(),
+  productName: import.meta.env.VITE_SOCOTRA_PRODUCT_NAME?.trim(),
 };
 
 // Validate configuration on load

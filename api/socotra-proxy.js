@@ -16,9 +16,9 @@ export default async function handler(req, res) {
   }
 
   const SOCOTRA_CONFIG = {
-    apiUrl: process.env.VITE_SOCOTRA_API_URL,
-    accessToken: process.env.VITE_SOCOTRA_PAT,
-    tenantLocator: process.env.VITE_SOCOTRA_TENANT_LOCATOR,
+    apiUrl: process.env.VITE_SOCOTRA_API_URL?.trim(),
+    accessToken: process.env.VITE_SOCOTRA_PAT?.trim(),
+    tenantLocator: process.env.VITE_SOCOTRA_TENANT_LOCATOR?.trim(),
   };
 
   // Get the endpoint and method from the request
