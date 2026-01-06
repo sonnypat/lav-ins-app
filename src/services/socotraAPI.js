@@ -10,31 +10,43 @@ const SOCOTRA_CONFIG = {
   productName: import.meta.env.VITE_SOCOTRA_PRODUCT_NAME,
 };
 
+// Validate configuration on load
+console.log('[Socotra] Configuration loaded:');
+console.log('[Socotra] API URL:', SOCOTRA_CONFIG.apiUrl);
+console.log('[Socotra] Tenant Locator:', SOCOTRA_CONFIG.tenantLocator);
+console.log('[Socotra] Product Name:', SOCOTRA_CONFIG.productName);
+console.log('[Socotra] Has Access Token:', !!SOCOTRA_CONFIG.accessToken);
+
+if (!SOCOTRA_CONFIG.apiUrl || !SOCOTRA_CONFIG.accessToken || !SOCOTRA_CONFIG.tenantLocator) {
+  console.error('[Socotra] ❌ Missing required configuration! Check your .env file.');
+  console.error('[Socotra] Required env vars: VITE_SOCOTRA_API_URL, VITE_SOCOTRA_PAT, VITE_SOCOTRA_TENANT_LOCATOR');
+}
+
 /**
- * Make authenticated API request to Socotra
+ * Make authenticated API request to Socotra via serverless proxy
+ * This avoids CORS issues by making requests server-side
  */
 async function makeRequest(endpoint, method = 'GET', data = null) {
-  const url = `${SOCOTRA_CONFIG.apiUrl}/policy/${SOCOTRA_CONFIG.tenantLocator}${endpoint}`;
+  // Use serverless proxy endpoint
+  const proxyUrl = '/api/socotra-proxy';
 
-  const options = {
-    method,
-    headers: {
-      'Authorization': `Bearer ${SOCOTRA_CONFIG.accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  };
-
-  if (data) {
-    options.body = JSON.stringify(data);
-  }
-
-  console.log(`[Socotra] ${method} ${url}`);
+  console.log(`[Socotra] ${method} ${endpoint}`);
   if (data) {
     console.log(`[Socotra] Request body:`, JSON.stringify(data, null, 2));
   }
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(proxyUrl, {
+      method: 'POST', // Always POST to proxy
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        endpoint,
+        method,
+        data,
+      }),
+    });
 
     console.log(`[Socotra] Response status:`, response.status, response.statusText);
 
@@ -47,7 +59,7 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
       } catch {
         error = { message: errorText || response.statusText };
       }
-      throw new Error(`API request failed (${response.status}): ${error.message || response.statusText}`);
+      throw new Error(`API request failed (${response.status}): ${error.message || error.error || response.statusText}`);
     }
 
     const responseData = await response.json();
