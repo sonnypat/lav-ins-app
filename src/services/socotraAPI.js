@@ -28,17 +28,31 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
     options.body = JSON.stringify(data);
   }
 
-  console.log(`[Socotra] ${method} ${endpoint}`);
+  console.log(`[Socotra] ${method} ${url}`);
+  if (data) {
+    console.log(`[Socotra] Request body:`, JSON.stringify(data, null, 2));
+  }
 
   try {
     const response = await fetch(url, options);
 
+    console.log(`[Socotra] Response status:`, response.status, response.statusText);
+
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(`API request failed: ${error.message || response.statusText}`);
+      const errorText = await response.text();
+      console.error(`[Socotra] Error response:`, errorText);
+      let error;
+      try {
+        error = JSON.parse(errorText);
+      } catch {
+        error = { message: errorText || response.statusText };
+      }
+      throw new Error(`API request failed (${response.status}): ${error.message || response.statusText}`);
     }
 
-    return response.json();
+    const responseData = await response.json();
+    console.log(`[Socotra] Response data:`, JSON.stringify(responseData, null, 2));
+    return responseData;
   } catch (error) {
     console.error(`[Socotra] Error on ${method} ${endpoint}:`, error);
     throw error;
@@ -50,30 +64,10 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
  */
 async function findOrCreateAccount(userData) {
   try {
-    console.log('[Socotra] Finding or creating account...');
+    console.log('[Socotra] Creating account...');
+    console.log('[Socotra] Account for:', userData.owner.email);
 
-    // Step 1: Search for existing account by email
-    console.log('[Socotra] Searching for existing account by email:', userData.owner.email);
-    try {
-      const searchParams = new URLSearchParams({
-        email: userData.owner.email,
-      });
-
-      const accounts = await makeRequest(`/accounts?${searchParams.toString()}`, 'GET');
-
-      if (accounts && accounts.length > 0) {
-        console.log(`[Socotra] ✅ Found existing account: ${accounts[0].locator}`);
-        console.log(`[Socotra] Account belongs to: ${accounts[0].data?.firstName} ${accounts[0].data?.lastName}`);
-        return accounts[0];
-      }
-
-      console.log('[Socotra] No existing account found, will create new one...');
-    } catch (searchError) {
-      console.log('[Socotra] ⚠️ Error searching for account:', searchError.message);
-      console.log('[Socotra] Will attempt to create new account...');
-    }
-
-    // Step 2: Create new account if not found
+    // Create new account (search functionality not supported by API)
     const accountData = {
       type: 'ConsumerAccount',
       delinquencyPlanName: 'Standard',
