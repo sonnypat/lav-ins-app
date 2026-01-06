@@ -60,7 +60,33 @@ const ChatContainer = () => {
         <div className="header-icon">💎</div>
         <div className="header-text">
           <h1>Lavalier Jewelry Insurance</h1>
-          <p>Protect your precious jewelry with personalized coverage</p>
+          <p>Personalized jewelry coverage, quickly and simply</p>
+        </div>
+
+        <div className="trust-badges">
+          <div className="trust-badge">
+            <div className="trust-badge-label">A.M. Best Rating</div>
+            <div className="trust-badge-value">A</div>
+          </div>
+          <div className="trust-badge">
+            <div className="trust-badge-label">S&P Rating</div>
+            <div className="trust-badge-value">A+</div>
+          </div>
+        </div>
+
+        <div className="sidebar-features">
+          <div className="sidebar-feature">
+            <span className="feature-icon">✓</span>
+            <span>Worldwide coverage</span>
+          </div>
+          <div className="sidebar-feature">
+            <span className="feature-icon">✓</span>
+            <span>Easy claims settlement</span>
+          </div>
+          <div className="sidebar-feature">
+            <span className="feature-icon">✓</span>
+            <span>No deductible</span>
+          </div>
         </div>
       </div>
 

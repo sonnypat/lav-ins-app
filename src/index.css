@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -12,13 +14,20 @@ html {
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Lavalier Brand Colors */
+  --lavalier-purple: #7a00df;
+  --lavalier-dark-gray: #32373c;
+  --lavalier-text: #171e48;
+  --lavalier-light-gray: #f8f9fa;
+  --lavalier-white: #ffffff;
+
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: var(--lavalier-text);
+  background-color: var(--lavalier-white);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,11 +37,11 @@ html {
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--lavalier-purple);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #6200b3;
 }
 
 body {
@@ -40,41 +49,45 @@ body {
   min-width: 320px;
   height: 100vh;
   overflow: hidden;
+  background-color: var(--lavalier-white);
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 2.625rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-weight: 500;
 }
 
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.75em 1.5em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--lavalier-dark-gray);
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: #454a50;
+  transform: translateY(-1px);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  outline: 2px solid var(--lavalier-purple);
+  outline-offset: 2px;
 }

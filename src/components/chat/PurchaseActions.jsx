@@ -6,8 +6,8 @@ const PurchaseActions = () => {
   if (!quoteResult) return null;
 
   const handlePurchase = () => {
-    // This would integrate with the actual purchase flow
-    alert('This would redirect to the purchase/binding flow. For now, the quote has been saved.');
+    // This would integrate with the actual purchase/binding flow
+    alert('Ready to apply for coverage! This would take you to our secure application in under 10 minutes.');
   };
 
   const handleStartOver = () => {
@@ -16,19 +16,19 @@ const PurchaseActions = () => {
   };
 
   const handleSaveForLater = () => {
-    alert('Quote saved! We\'ll send you an email with your quote details.');
+    alert('Quote saved! We\'ll email you the details so you can review at your convenience.');
   };
 
   return (
     <div className="purchase-actions-container">
       <button onClick={handlePurchase} className="purchase-btn primary">
-        Yes, Purchase Policy
+        Get Started
       </button>
       <button onClick={handleSaveForLater} className="purchase-btn secondary">
-        Save for Later
+        Email Quote
       </button>
       <button onClick={handleStartOver} className="purchase-btn tertiary">
-        Start New Quote
+        New Quote
       </button>
     </div>
   );

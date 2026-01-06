@@ -84,7 +84,7 @@ export const useQuoteFlow = () => {
 
             // Add a follow-up message asking if they want to proceed
             await addBotMessage(
-              "Your personalized quote is ready! Take a look at the details on the right. Would you like to proceed with purchasing this policy?",
+              "Your quote is ready! Review the details on the right. Ready to get protected?",
               1000
             );
           } catch (error) {

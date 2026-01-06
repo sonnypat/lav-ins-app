@@ -23,7 +23,7 @@ export const QUESTIONS = [
   {
     id: 'welcome',
     type: 'bot_message',
-    message: "Hi! Let's get your jewelry protected. I'll guide you through a quick quote.",
+    message: "Welcome! Get a personalized jewelry insurance quote in under a minute. Let's protect what matters most.",
     skipInput: true
   },
 
@@ -31,7 +31,7 @@ export const QUESTIONS = [
   {
     id: 'zip_code',
     type: 'question',
-    question: "Let's start! What's your zip code?",
+    question: "What's your zip code?",
     field: 'owner.zipCode',
     inputType: 'text',
     validator: 'zipCode',
