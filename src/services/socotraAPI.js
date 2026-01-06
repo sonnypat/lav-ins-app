@@ -23,30 +23,52 @@ if (!SOCOTRA_CONFIG.apiUrl || !SOCOTRA_CONFIG.accessToken || !SOCOTRA_CONFIG.ten
 }
 
 /**
- * Make authenticated API request to Socotra via serverless proxy
- * This avoids CORS issues by making requests server-side
+ * Make authenticated API request to Socotra
+ * Uses proxy in production, direct calls in development
  */
 async function makeRequest(endpoint, method = 'GET', data = null) {
-  // Use serverless proxy endpoint
-  const proxyUrl = '/api/socotra-proxy';
+  const isDevelopment = import.meta.env.DEV;
 
-  console.log(`[Socotra] ${method} ${endpoint}`);
+  console.log(`[Socotra] ${method} ${endpoint} (${isDevelopment ? 'development' : 'production'})`);
   if (data) {
     console.log(`[Socotra] Request body:`, JSON.stringify(data, null, 2));
   }
 
   try {
-    const response = await fetch(proxyUrl, {
-      method: 'POST', // Always POST to proxy
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        endpoint,
+    let response;
+
+    if (isDevelopment) {
+      // In development: make direct API calls (CORS may be an issue, but we have the env vars)
+      const url = `${SOCOTRA_CONFIG.apiUrl}/policy/${SOCOTRA_CONFIG.tenantLocator}${endpoint}`;
+      const options = {
         method,
-        data,
-      }),
-    });
+        headers: {
+          'Authorization': `Bearer ${SOCOTRA_CONFIG.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      };
+
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+
+      console.log(`[Socotra] Direct request to: ${url}`);
+      response = await fetch(url, options);
+    } else {
+      // In production: use serverless proxy
+      const proxyUrl = '/api/socotra-proxy';
+      response = await fetch(proxyUrl, {
+        method: 'POST', // Always POST to proxy
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          endpoint,
+          method,
+          data,
+        }),
+      });
+    }
 
     console.log(`[Socotra] Response status:`, response.status, response.statusText);
 
