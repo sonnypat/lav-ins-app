@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useChatContext } from '../context/ChatContext';
 import { QUESTIONS } from '../constants/questions';
 import { useChat } from './useChat';
-import { generateQuote } from '../services/mockJewelryAPI';
+import { generateJewelryQuote } from '../services/socotraAPI';
 
 export const useQuoteFlow = () => {
   const {
@@ -77,10 +77,11 @@ export const useQuoteFlow = () => {
           try {
             // Use currentUserData which has the latest values
             console.log('📊 Generating quote with userData:', JSON.stringify(currentUserData, null, 2));
-            const quote = await generateQuote(currentUserData);
+            const quote = await generateJewelryQuote(currentUserData);
             setQuoteResult(quote);
             setFlowState(prev => ({ ...prev, isLoading: false, isComplete: true }));
           } catch (error) {
+            console.error('Error generating quote:', error);
             setFlowState(prev => ({ ...prev, isLoading: false, error: error.message }));
           }
         } else {
