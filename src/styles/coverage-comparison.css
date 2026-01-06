@@ -1,0 +1,258 @@
+/* Coverage Comparison */
+.coverage-comparison {
+  padding: 8px 0;
+}
+
+.comparison-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.comparison-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 8px 0;
+}
+
+.comparison-header p {
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* Tiers Container */
+.tiers-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Tier Card */
+.tier-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(155, 89, 182, 0.2);
+  border-radius: 20px;
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  animation: tierFadeIn 0.5s ease-out backwards;
+}
+
+.tier-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(155, 89, 182, 0.5);
+  box-shadow: 0 12px 32px rgba(155, 89, 182, 0.2);
+}
+
+.tier-card.selected {
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.2) 0%, rgba(168, 85, 247, 0.15) 100%);
+  border-color: #a855f7;
+  box-shadow: 0 8px 32px rgba(155, 89, 182, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tier-card.popular {
+  transform: scale(1.02);
+}
+
+.tier-card.popular:hover {
+  transform: scale(1.02) translateY(-4px);
+}
+
+.tier-card.popular.selected {
+  transform: scale(1.02);
+}
+
+/* Popular Badge */
+.popular-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #9b59b6 0%, #a855f7 100%);
+  color: white;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+}
+
+/* Tier Header */
+.tier-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.tier-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.tier-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Tier Price */
+.tier-price {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(155, 89, 182, 0.15);
+}
+
+.price-amount {
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #e8d5f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.price-period {
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Features */
+.tier-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8125rem;
+}
+
+.feature-item.included {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.feature-item.excluded {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.feature-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 50%;
+}
+
+.feature-item.included .feature-icon {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.feature-item.excluded .feature-icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Select Button */
+.select-tier-button {
+  width: 100%;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.select-tier-button:hover:not(:disabled) {
+  background: rgba(155, 89, 182, 0.3);
+  border-color: rgba(155, 89, 182, 0.6);
+}
+
+.select-tier-button.selected {
+  background: linear-gradient(135deg, #9b59b6 0%, #a855f7 100%);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+}
+
+.select-tier-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.comparison-footer {
+  text-align: center;
+}
+
+.comparison-footer p {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+@keyframes tierFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .tiers-container {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto 20px;
+  }
+
+  .tier-card.popular {
+    transform: none;
+    order: -1;
+  }
+
+  .tier-card.popular:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 480px) {
+  .tier-card {
+    padding: 20px 16px;
+  }
+
+  .tier-icon {
+    font-size: 2rem;
+  }
+
+  .tier-name {
+    font-size: 1.125rem;
+  }
+
+  .price-amount {
+    font-size: 2rem;
+  }
+}
