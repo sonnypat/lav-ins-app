@@ -14,12 +14,12 @@ html {
 }
 
 :root {
-  /* Lavalier Brand Colors - Enhanced Palette */
-  --lavalier-purple: #7a00df;
-  --lavalier-purple-light: #9d4edd;
-  --lavalier-purple-dark: #5a189a;
-  --lavalier-purple-subtle: rgba(122, 0, 223, 0.12);
-  --lavalier-purple-glow: rgba(122, 0, 223, 0.25);
+  /* Lavalier Brand Colors - Muted Sophisticated Palette */
+  --lavalier-purple: #8b5fbf;
+  --lavalier-purple-light: #a989cc;
+  --lavalier-purple-dark: #6d4a99;
+  --lavalier-purple-subtle: rgba(139, 95, 191, 0.12);
+  --lavalier-purple-glow: rgba(139, 95, 191, 0.20);
 
   --lavalier-dark-gray: #32373c;
   --lavalier-text: #e8e8f0;
@@ -36,15 +36,15 @@ html {
   --glass-dark: rgba(26, 22, 37, 0.75);
   --glass-medium: rgba(34, 28, 48, 0.65);
   --glass-light: rgba(45, 38, 64, 0.55);
-  --glass-purple: rgba(122, 0, 223, 0.15);
-  --glass-purple-strong: rgba(122, 0, 223, 0.25);
+  --glass-purple: rgba(139, 95, 191, 0.12);
+  --glass-purple-strong: rgba(139, 95, 191, 0.18);
 
   /* Shadows for depth */
   --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.5), 0 4px 8px -2px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 10px 15px -5px rgba(0, 0, 0, 0.5);
-  --shadow-purple: 0 10px 25px rgba(122, 0, 223, 0.35);
+  --shadow-purple: 0 10px 25px rgba(139, 95, 191, 0.25);
 
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;

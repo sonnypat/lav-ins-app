@@ -31,9 +31,9 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 15% 25%, rgba(122, 0, 223, 0.18) 0%, transparent 40%),
-    radial-gradient(circle at 85% 75%, rgba(157, 78, 221, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(122, 0, 223, 0.08) 0%, transparent 55%);
+    radial-gradient(circle at 15% 25%, rgba(139, 95, 191, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 85% 75%, rgba(169, 137, 204, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(139, 95, 191, 0.05) 0%, transparent 55%);
   pointer-events: none;
   animation: subtleGlow 15s ease-in-out infinite alternate;
 }
