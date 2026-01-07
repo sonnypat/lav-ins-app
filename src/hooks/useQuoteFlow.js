@@ -3,7 +3,7 @@ import { useChatContext } from '../context/ChatContext';
 import { QUESTIONS } from '../constants/questions';
 import { useChat } from './useChat';
 import { generateJewelryQuote } from '../services/socotraAPI';
-import { getStateFromZip } from '../utils/zipToState';
+import { getStateFromZip, lookupZipCode } from '../utils/zipToState';
 
 export const useQuoteFlow = () => {
   const {
@@ -143,7 +143,7 @@ export const useQuoteFlow = () => {
           [keys[0]]: { ...updatedUserData[keys[0]], [keys[1]]: answer }
         };
 
-        // If this is a ZIP code, automatically determine and set the state
+        // If this is a ZIP code, automatically determine state and lookup city
         if (keys[1] === 'zipCode') {
           const state = getStateFromZip(answer);
           if (state) {
@@ -154,6 +154,19 @@ export const useQuoteFlow = () => {
             // Also update the state in the actual state
             updateUserData('owner.state', state);
           }
+          
+          // Lookup city from ZIP code (async, but we don't wait for it)
+          lookupZipCode(answer).then(zipData => {
+            if (zipData?.city) {
+              console.log(`[ZipLookup] Found city: ${zipData.city} for ZIP: ${answer}`);
+              updateUserData('owner.city', zipData.city);
+              // Also update the ref
+              userDataRef.current = {
+                ...userDataRef.current,
+                owner: { ...userDataRef.current.owner, city: zipData.city }
+              };
+            }
+          });
         }
       }
 

@@ -141,3 +141,36 @@ export function getStateName(stateAbbr) {
   const upperAbbr = stateAbbr.toUpperCase();
   return STATE_NAMES[upperAbbr] || null;
 }
+
+/**
+ * Lookup city and state from ZIP code using Zippopotam.us API
+ * @param {string} zipCode - 5-digit ZIP code
+ * @returns {Promise<{city: string, state: string, stateAbbr: string} | null>}
+ */
+export async function lookupZipCode(zipCode) {
+  if (!zipCode || zipCode.length < 5) return null;
+  
+  try {
+    const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`);
+    if (!response.ok) {
+      console.warn(`[ZipLookup] ZIP code ${zipCode} not found`);
+      return null;
+    }
+    
+    const data = await response.json();
+    const place = data.places?.[0];
+    
+    if (place) {
+      const stateAbbr = place['state abbreviation'];
+      return {
+        city: place['place name'],
+        stateAbbr: stateAbbr,
+        state: STATE_NAMES[stateAbbr] || stateAbbr
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('[ZipLookup] Error fetching ZIP data:', error);
+    return null;
+  }
+}

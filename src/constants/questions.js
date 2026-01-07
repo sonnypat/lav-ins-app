@@ -230,6 +230,8 @@ export const QUESTIONS = [
     field: 'owner.city',
     inputType: 'text',
     validator: 'required',
+    // Skip this question if city was already determined from ZIP code lookup
+    condition: (userData) => !userData.owner?.city,
     testValue: 'New York'
   },
 
@@ -248,7 +250,10 @@ export const QUESTIONS = [
       const tierName = userData.coverage?.tier || 'Premium';
       const tierCapitalized = tierName.charAt(0).toUpperCase() + tierName.slice(1);
 
-      return `Perfect! Here's what we'll be insuring:\n\n📍 **Location:** ${userData.owner?.state}, ${userData.owner?.zipCode}\n💎 **Items:**\n${itemsList}\n\n💰 **Total Value:** $${totalValue.toLocaleString()}\n🛡️ **Coverage:** ${tierCapitalized}\n\nGenerating your personalized quote...`;
+      const location = userData.owner?.city 
+        ? `${userData.owner.city}, ${userData.owner?.state} ${userData.owner?.zipCode}`
+        : `${userData.owner?.state}, ${userData.owner?.zipCode}`;
+      return `Perfect! Here's what we'll be insuring:\n\n📍 **Location:** ${location}\n💎 **Items:**\n${itemsList}\n\n💰 **Total Value:** $${totalValue.toLocaleString()}\n🛡️ **Coverage:** ${tierCapitalized}\n\nGenerating your personalized quote...`;
     },
     triggerQuote: true
   }
