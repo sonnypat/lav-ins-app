@@ -98,16 +98,27 @@ export const QUESTIONS = [
     condition: (userData) => userData.jewelry?.hasMultipleItems === 'Yes',
     testValue: TEST_DATA.jewelry.items[0].value
   },
+  // Ask about more items after item 1
+  {
+    id: 'has_more_items_1',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter1',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.hasMultipleItems === 'Yes',
+    testValue: 'Yes'
+  },
 
   // Multiple Items Flow - Item 2
   {
     id: 'multi_item_2_type',
     type: 'question',
-    question: "Now for your second item. What type of jewelry is it?",
+    question: "What type of jewelry is your second item?",
     field: 'jewelry.items.1.type',
     inputType: 'select',
     options: JEWELRY_TYPES,
-    condition: (userData) => userData.jewelry?.hasMultipleItems === 'Yes',
+    condition: (userData) => userData.jewelry?.addMoreAfter1 === 'Yes',
     testValue: 'Ladies Necklace/Chain'
   },
   {
@@ -117,19 +128,18 @@ export const QUESTIONS = [
     field: 'jewelry.items.1.value',
     inputType: 'number',
     validator: 'jewelryValue',
-    condition: (userData) => userData.jewelry?.hasMultipleItems === 'Yes',
+    condition: (userData) => userData.jewelry?.addMoreAfter1 === 'Yes',
     testValue: 8000
   },
-
-  // Ask about additional items
+  // Ask about more items after item 2
   {
-    id: 'has_more_items',
+    id: 'has_more_items_2',
     type: 'question',
-    question: "Do you have any additional items to insure?",
-    field: 'jewelry.hasMoreItems',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter2',
     inputType: 'select',
     options: ['Yes', 'No'],
-    condition: (userData) => userData.jewelry?.hasMultipleItems === 'Yes',
+    condition: (userData) => userData.jewelry?.addMoreAfter1 === 'Yes',
     testValue: 'No'
   },
 
@@ -137,11 +147,11 @@ export const QUESTIONS = [
   {
     id: 'multi_item_3_type',
     type: 'question',
-    question: "What type is your third item?",
+    question: "What type of jewelry is your third item?",
     field: 'jewelry.items.2.type',
     inputType: 'select',
     options: JEWELRY_TYPES,
-    condition: (userData) => userData.jewelry?.hasMoreItems === 'Yes',
+    condition: (userData) => userData.jewelry?.addMoreAfter2 === 'Yes',
     testValue: 'Ladies Bracelet'
   },
   {
@@ -151,8 +161,247 @@ export const QUESTIONS = [
     field: 'jewelry.items.2.value',
     inputType: 'number',
     validator: 'jewelryValue',
-    condition: (userData) => userData.jewelry?.hasMoreItems === 'Yes',
+    condition: (userData) => userData.jewelry?.addMoreAfter2 === 'Yes',
     testValue: 5000
+  },
+  // Ask about more items after item 3
+  {
+    id: 'has_more_items_3',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter3',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.addMoreAfter2 === 'Yes',
+    testValue: 'No'
+  },
+
+  // Multiple Items Flow - Item 4
+  {
+    id: 'multi_item_4_type',
+    type: 'question',
+    question: "What type of jewelry is your fourth item?",
+    field: 'jewelry.items.3.type',
+    inputType: 'select',
+    options: JEWELRY_TYPES,
+    condition: (userData) => userData.jewelry?.addMoreAfter3 === 'Yes',
+    testValue: 'Mens Watch'
+  },
+  {
+    id: 'multi_item_4_value',
+    type: 'question',
+    question: "What's the value of this fourth item?",
+    field: 'jewelry.items.3.value',
+    inputType: 'number',
+    validator: 'jewelryValue',
+    condition: (userData) => userData.jewelry?.addMoreAfter3 === 'Yes',
+    testValue: 3000
+  },
+  // Ask about more items after item 4
+  {
+    id: 'has_more_items_4',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter4',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.addMoreAfter3 === 'Yes',
+    testValue: 'No'
+  },
+
+  // Multiple Items Flow - Item 5
+  {
+    id: 'multi_item_5_type',
+    type: 'question',
+    question: "What type of jewelry is your fifth item?",
+    field: 'jewelry.items.4.type',
+    inputType: 'select',
+    options: JEWELRY_TYPES,
+    condition: (userData) => userData.jewelry?.addMoreAfter4 === 'Yes',
+    testValue: 'Pair of Earrings'
+  },
+  {
+    id: 'multi_item_5_value',
+    type: 'question',
+    question: "What's the value of this fifth item?",
+    field: 'jewelry.items.4.value',
+    inputType: 'number',
+    validator: 'jewelryValue',
+    condition: (userData) => userData.jewelry?.addMoreAfter4 === 'Yes',
+    testValue: 2000
+  },
+  // Ask about more items after item 5
+  {
+    id: 'has_more_items_5',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter5',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.addMoreAfter4 === 'Yes',
+    testValue: 'No'
+  },
+
+  // Multiple Items Flow - Item 6
+  {
+    id: 'multi_item_6_type',
+    type: 'question',
+    question: "What type of jewelry is your sixth item?",
+    field: 'jewelry.items.5.type',
+    inputType: 'select',
+    options: JEWELRY_TYPES,
+    condition: (userData) => userData.jewelry?.addMoreAfter5 === 'Yes',
+    testValue: 'Brooch'
+  },
+  {
+    id: 'multi_item_6_value',
+    type: 'question',
+    question: "What's the value of this sixth item?",
+    field: 'jewelry.items.5.value',
+    inputType: 'number',
+    validator: 'jewelryValue',
+    condition: (userData) => userData.jewelry?.addMoreAfter5 === 'Yes',
+    testValue: 1500
+  },
+  // Ask about more items after item 6
+  {
+    id: 'has_more_items_6',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter6',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.addMoreAfter5 === 'Yes',
+    testValue: 'No'
+  },
+
+  // Multiple Items Flow - Item 7
+  {
+    id: 'multi_item_7_type',
+    type: 'question',
+    question: "What type of jewelry is your seventh item?",
+    field: 'jewelry.items.6.type',
+    inputType: 'select',
+    options: JEWELRY_TYPES,
+    condition: (userData) => userData.jewelry?.addMoreAfter6 === 'Yes',
+    testValue: 'Other'
+  },
+  {
+    id: 'multi_item_7_value',
+    type: 'question',
+    question: "What's the value of this seventh item?",
+    field: 'jewelry.items.6.value',
+    inputType: 'number',
+    validator: 'jewelryValue',
+    condition: (userData) => userData.jewelry?.addMoreAfter6 === 'Yes',
+    testValue: 1000
+  },
+  // Ask about more items after item 7
+  {
+    id: 'has_more_items_7',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter7',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.addMoreAfter6 === 'Yes',
+    testValue: 'No'
+  },
+
+  // Multiple Items Flow - Item 8
+  {
+    id: 'multi_item_8_type',
+    type: 'question',
+    question: "What type of jewelry is your eighth item?",
+    field: 'jewelry.items.7.type',
+    inputType: 'select',
+    options: JEWELRY_TYPES,
+    condition: (userData) => userData.jewelry?.addMoreAfter7 === 'Yes',
+    testValue: 'Other'
+  },
+  {
+    id: 'multi_item_8_value',
+    type: 'question',
+    question: "What's the value of this eighth item?",
+    field: 'jewelry.items.7.value',
+    inputType: 'number',
+    validator: 'jewelryValue',
+    condition: (userData) => userData.jewelry?.addMoreAfter7 === 'Yes',
+    testValue: 1000
+  },
+  // Ask about more items after item 8
+  {
+    id: 'has_more_items_8',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter8',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.addMoreAfter7 === 'Yes',
+    testValue: 'No'
+  },
+
+  // Multiple Items Flow - Item 9
+  {
+    id: 'multi_item_9_type',
+    type: 'question',
+    question: "What type of jewelry is your ninth item?",
+    field: 'jewelry.items.8.type',
+    inputType: 'select',
+    options: JEWELRY_TYPES,
+    condition: (userData) => userData.jewelry?.addMoreAfter8 === 'Yes',
+    testValue: 'Other'
+  },
+  {
+    id: 'multi_item_9_value',
+    type: 'question',
+    question: "What's the value of this ninth item?",
+    field: 'jewelry.items.8.value',
+    inputType: 'number',
+    validator: 'jewelryValue',
+    condition: (userData) => userData.jewelry?.addMoreAfter8 === 'Yes',
+    testValue: 1000
+  },
+  // Ask about more items after item 9
+  {
+    id: 'has_more_items_9',
+    type: 'question',
+    question: "Do you have another item to insure?",
+    field: 'jewelry.addMoreAfter9',
+    inputType: 'select',
+    options: ['Yes', 'No'],
+    condition: (userData) => userData.jewelry?.addMoreAfter8 === 'Yes',
+    testValue: 'No'
+  },
+
+  // Multiple Items Flow - Item 10 (last one)
+  {
+    id: 'multi_item_10_type',
+    type: 'question',
+    question: "What type of jewelry is your tenth item?",
+    field: 'jewelry.items.9.type',
+    inputType: 'select',
+    options: JEWELRY_TYPES,
+    condition: (userData) => userData.jewelry?.addMoreAfter9 === 'Yes',
+    testValue: 'Other'
+  },
+  {
+    id: 'multi_item_10_value',
+    type: 'question',
+    question: "What's the value of this tenth item?",
+    field: 'jewelry.items.9.value',
+    inputType: 'number',
+    validator: 'jewelryValue',
+    condition: (userData) => userData.jewelry?.addMoreAfter9 === 'Yes',
+    testValue: 1000
+  },
+  // Message for reaching max items
+  {
+    id: 'max_items_reached',
+    type: 'bot_message',
+    message: "Great! You've added 10 items. Let's continue with the rest of your quote.",
+    condition: (userData) => userData.jewelry?.addMoreAfter9 === 'Yes',
+    skipInput: true
   },
 
   // Optional Image Upload
