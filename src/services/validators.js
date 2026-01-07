@@ -118,5 +118,12 @@ export const validators = {
       return { isValid: false, error: 'For items over $1M, please contact us directly' };
     }
     return { isValid: true, error: null };
+  },
+
+  required: (value) => {
+    if (!value || value.trim().length === 0) {
+      return { isValid: false, error: 'This field is required' };
+    }
+    return { isValid: true, error: null };
   }
 };

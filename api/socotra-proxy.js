@@ -46,13 +46,34 @@ export default async function handler(req, res) {
     }
 
     const response = await fetch(url, options);
-    const responseData = await response.json();
-
+    
     console.log(`[Socotra Proxy] Response status: ${response.status}`);
+    
+    // Try to parse as JSON, but handle non-JSON responses
+    let responseData;
+    const contentType = response.headers.get('content-type');
+    const isJson = contentType && contentType.includes('application/json');
+    
+    if (isJson) {
+      try {
+        responseData = await response.json();
+      } catch (parseError) {
+        console.error('[Socotra Proxy] Failed to parse JSON response:', parseError);
+        const text = await response.text();
+        return res.status(response.status).json({
+          error: 'Invalid JSON response from Socotra API',
+          details: text,
+        });
+      }
+    } else {
+      // Non-JSON response
+      const text = await response.text();
+      responseData = { message: text || response.statusText };
+    }
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: responseData.message || 'Socotra API request failed',
+        error: responseData.message || responseData.error || 'Socotra API request failed',
         details: responseData,
       });
     }

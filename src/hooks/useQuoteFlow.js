@@ -157,9 +157,15 @@ export const useQuoteFlow = () => {
         }
       }
 
-      // Also update the actual state
+      // Update the ref immediately so subsequent answers have the latest data
+      userDataRef.current = updatedUserData;
+      
+      // Also update the actual React state
       updateUserData(question.field, answer);
     }
+
+    console.log('📝 processAnswer - field:', question.field, 'answer:', answer);
+    console.log('📝 processAnswer - updatedUserData.owner:', updatedUserData.owner);
 
     // Move to next question with the computed userData (no race condition)
     const nextStep = flowState.currentStep + 1;

@@ -18,6 +18,8 @@ export const ChatProvider = ({ children }) => {
       lastName: '',
       email: '',
       phone: '',
+      street: '',
+      city: '',
       zipCode: ''
     },
     jewelry: {
@@ -95,6 +97,8 @@ export const ChatProvider = ({ children }) => {
         lastName: '',
         email: '',
         phone: '',
+        street: '',
+        city: '',
         zipCode: ''
       },
       jewelry: {

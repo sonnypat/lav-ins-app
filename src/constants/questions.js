@@ -1,11 +1,17 @@
 // Jewelry Insurance Quote Questions
+import { JEWELRY_TYPES } from './socotraConfig';
 
 // Set to true to enable test mode with auto-filled values
 export const TEST_MODE = false;
 
+// Re-export JEWELRY_TYPES for backwards compatibility
+export { JEWELRY_TYPES };
+
 export const TEST_DATA = {
   owner: {
-    zipCode: '10001'
+    zipCode: '10001',
+    street: '123 Main Street',
+    city: 'New York'
   },
   jewelry: {
     hasMultipleItems: 'No',
@@ -56,15 +62,7 @@ export const QUESTIONS = [
     question: "What type of jewelry would you like to insure?",
     field: 'jewelry.items.0.type',
     inputType: 'select',
-    options: [
-      'Engagement Ring',
-      'Wedding Ring',
-      'Necklace',
-      'Bracelet',
-      'Earrings',
-      'Watch',
-      'Other'
-    ],
+    options: JEWELRY_TYPES,
     condition: (userData) => userData.jewelry?.hasMultipleItems === 'No',
     testValue: TEST_DATA.jewelry.items[0].type
   },
@@ -86,15 +84,7 @@ export const QUESTIONS = [
     question: "Great! Let's start with your first item. What type of jewelry is it?",
     field: 'jewelry.items.0.type',
     inputType: 'select',
-    options: [
-      'Engagement Ring',
-      'Wedding Ring',
-      'Necklace',
-      'Bracelet',
-      'Earrings',
-      'Watch',
-      'Other'
-    ],
+    options: JEWELRY_TYPES,
     condition: (userData) => userData.jewelry?.hasMultipleItems === 'Yes',
     testValue: TEST_DATA.jewelry.items[0].type
   },
@@ -116,17 +106,9 @@ export const QUESTIONS = [
     question: "Now for your second item. What type of jewelry is it?",
     field: 'jewelry.items.1.type',
     inputType: 'select',
-    options: [
-      'Engagement Ring',
-      'Wedding Ring',
-      'Necklace',
-      'Bracelet',
-      'Earrings',
-      'Watch',
-      'Other'
-    ],
+    options: JEWELRY_TYPES,
     condition: (userData) => userData.jewelry?.hasMultipleItems === 'Yes',
-    testValue: 'Necklace'
+    testValue: 'Ladies Necklace/Chain'
   },
   {
     id: 'multi_item_2_value',
@@ -158,17 +140,9 @@ export const QUESTIONS = [
     question: "What type is your third item?",
     field: 'jewelry.items.2.type',
     inputType: 'select',
-    options: [
-      'Engagement Ring',
-      'Wedding Ring',
-      'Necklace',
-      'Bracelet',
-      'Earrings',
-      'Watch',
-      'Other'
-    ],
+    options: JEWELRY_TYPES,
     condition: (userData) => userData.jewelry?.hasMoreItems === 'Yes',
-    testValue: 'Bracelet'
+    testValue: 'Ladies Bracelet'
   },
   {
     id: 'multi_item_3_value',
@@ -237,6 +211,26 @@ export const QUESTIONS = [
     inputType: 'text',
     validator: 'phone',
     testValue: '555-123-4567'
+  },
+
+  // Address Information
+  {
+    id: 'owner_street',
+    type: 'question',
+    question: "What's your street address?",
+    field: 'owner.street',
+    inputType: 'text',
+    validator: 'required',
+    testValue: '123 Main Street'
+  },
+  {
+    id: 'owner_city',
+    type: 'question',
+    question: "What city do you live in?",
+    field: 'owner.city',
+    inputType: 'text',
+    validator: 'required',
+    testValue: 'New York'
   },
 
   // Summary
