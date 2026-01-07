@@ -357,18 +357,40 @@ function transformQuoteResponse(socotraQuote, userData, pricingData = null) {
   // Extract premium from pricing data
   let totalPremium = 0;
 
+  console.log('[Socotra] Extracting premium from pricingData:', JSON.stringify(pricingData, null, 2));
+
   if (pricingData?.items && Array.isArray(pricingData.items)) {
-    // Sum all charges (premium + taxes + fees)
-    totalPremium = pricingData.items.reduce((sum, item) => sum + (item.amount || 0), 0);
+    // Sum all charges (premium + taxes + fees) - use rate if amount is not available
+    totalPremium = pricingData.items.reduce((sum, item) => {
+      const value = item.amount ?? item.rate ?? 0;
+      return sum + (typeof value === 'number' ? value : parseFloat(value) || 0);
+    }, 0);
     console.log('[Socotra] Premium from pricing items:', totalPremium);
   } else if (pricingData?.totalPremium) {
     totalPremium = pricingData.totalPremium;
+    console.log('[Socotra] Premium from pricingData.totalPremium:', totalPremium);
+  } else if (pricingData?.total) {
+    totalPremium = pricingData.total;
+    console.log('[Socotra] Premium from pricingData.total:', totalPremium);
   } else if (socotraQuote.pricing?.totalPremium) {
     totalPremium = socotraQuote.pricing.totalPremium;
+    console.log('[Socotra] Premium from socotraQuote.pricing.totalPremium:', totalPremium);
+  } else if (socotraQuote.pricing?.items) {
+    // Try to extract from quote's pricing items
+    totalPremium = socotraQuote.pricing.items.reduce((sum, item) => {
+      const value = item.amount ?? item.rate ?? 0;
+      return sum + (typeof value === 'number' ? value : parseFloat(value) || 0);
+    }, 0);
+    console.log('[Socotra] Premium from socotraQuote.pricing.items:', totalPremium);
   }
 
+  // Round to 2 decimal places
+  totalPremium = Math.round(totalPremium * 100) / 100;
+  
   const monthlyPremium = totalPremium > 0 ? Math.ceil(totalPremium / 12) : 0;
-  const annualPremium = totalPremium;
+  const annualPremium = Math.round(totalPremium);
+  
+  console.log('[Socotra] Final premium - Annual:', annualPremium, 'Monthly:', monthlyPremium);
 
   const items = userData.jewelry.items;
   const totalValue = items.reduce((sum, item) => sum + item.value, 0);
